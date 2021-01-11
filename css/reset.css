@@ -1,0 +1,52 @@
+/* ------------------- 规范、重置、统一、页面样式 ------------------- */
+
+html, body {
+  width: 100%;
+  height: 100%;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+/* ------------------- 公共样式 ------------------- */
+
+/* 容器-开启 relative 定位 */
+.container-relative {
+  position: relative;
+}
+/* 容器-内容全窗口宽度 */
+.container-full {
+  width: 100%;
+  height: 100%;
+}
+.container-full-width {
+  width: 100%;
+}
+/* 容器-内容全窗口宽度-内容整体居中 */
+.container-full-center {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.container-full-column-center {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.container-full-width-center {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.container-full-width-column-center {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

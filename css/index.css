@@ -1,0 +1,32 @@
+.import-view {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  animation: gradual 1.2s linear 1;
+  animation-fill-mode: forwards;
+}
+@keyframes gradual {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1.0;
+  }
+}
+.import-button {
+  margin-top: 100px;
+}
+.import-button-bg {
+  margin-top: 30px;
+}
+.import-hint {
+  margin-top: 30px;
+  color: #8F8F8F;
+  font-size: 13px;
+}

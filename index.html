@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>抽奖 - 首页</title>
+  <link rel="stylesheet" href="./css/reset.css">
+  <style>
+    body {
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <!-- 3D云层效果 -->
+  <script type="text/javascript" src="./lib/clouds/ThreeWebGL.js"></script> 
+  <script type="text/javascript" src="./lib/clouds/ThreeExtras.js"></script> 
+  <script type="text/javascript" src="./lib/clouds/Detector.js"></script> 
+  <script type="text/javascript" src="./lib/clouds/RequestAnimationFrame.js"></script> 
+  <script id="vs" type="x-shader/x-vertex">
+    varying vec2 vUv;
+    void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+    }
+  </script> 
+  <script id="fs" type="x-shader/x-fragment">
+    uniform sampler2D map;
+    uniform vec3 fogColor;
+    uniform float fogNear;
+    uniform float fogFar;
+    varying vec2 vUv;
+    void main() {
+      float depth = gl_FragCoord.z / gl_FragCoord.w;
+      float fogFactor = smoothstep( fogNear, fogFar, depth );
+      gl_FragColor = texture2D( map, vUv );
+      gl_FragColor.w *= pow( gl_FragCoord.z, 20.0 );
+      gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );
+    }
+  </script> 
+  <script src="./lib/clouds/Clouds.js"></script>
+
+  <!-- Vue -->
+  <script src="./lib/vue.min.js"></script>
+
+  <!-- antd -->
+  <script src="./lib/ant-design-vue/dist/antd.js"></script>
+  <link href="./lib/ant-design-vue/dist/antd.css" rel="stylesheet"/>
+
+  <!-- form-json -->
+  <script src="./lib/form-json/xlsx.full.min.js"></script>
+  <script src="./lib/form-json/jschardet.min.js"></script>
+  <script src="./lib/form-json/csv.js"></script>
+  <script src="./lib/form-json/xlsx.js"></script>
+  <script src="./lib/form-json/form.js"></script>
+
+  <!-- Vue 渲染组件 -->
+  <div id="app"></div>
+
+  <!-- Vue UI -->
+  <script src="./js/index.js"></script>
+  <link rel="stylesheet" href="./css/index.css">
+</body>
+</html>
