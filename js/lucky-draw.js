@@ -121,8 +121,10 @@ new Vue({
       this.users = tempUsers
     },
     GetUsers () {
+      // 剩余用户
       const surplusUsers = [...this.surplusUsers]
       const lastUsers = []
+      // 标记用户
       surplusUsers.forEach(user => {
         if (user.number > 0 && user.number == this.number) {
           if (lastUsers.length < this.numberPeople) {
@@ -132,6 +134,7 @@ new Vue({
           }
         }
       })
+      // 随机用户
       while (this.surplusUsers.length > 0 && lastUsers.length < this.numberPeople) {
         const index = parseInt(Math.random()*this.surplusUsers.length)
         const user = this.surplusUsers[index]
@@ -143,6 +146,17 @@ new Vue({
           }
         }
       }
+      // 打乱顺序
+      var length = lastUsers.length
+      if (length > 1) {
+        for (var i = 0; i < length - 1; i++) {
+            var index = parseInt(Math.random() * (length - i));
+            var temp = lastUsers[index];
+            lastUsers[index] = lastUsers[length - i - 1];
+            lastUsers[length - i - 1] = temp;
+        }
+      }
+      // 记录
       this.lastUsers = lastUsers
     }
   }
