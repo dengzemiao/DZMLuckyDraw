@@ -156,7 +156,7 @@ new Vue({
             lastUsers[length - i - 1] = temp;
         }
       }
-      // 记录
+      // 记录数据
       this.lastUsers = lastUsers
     }
   }
