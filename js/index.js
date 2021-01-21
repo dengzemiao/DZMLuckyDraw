@@ -136,7 +136,7 @@ new Vue({
         @change="handleImportModeChange"
       >
         <a-select-option :value="0">默认抽奖模式</a-select-option>
-        <a-select-option :value="1">自定义抽奖模式</a-select-option>
+        <a-select-option :value="1">自定义奖项模式</a-select-option>
       </a-select>
       <!-- 设置按钮 -->
       <a-button
