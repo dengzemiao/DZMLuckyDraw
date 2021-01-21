@@ -10,7 +10,7 @@ const CustomLuckyDrawDrawer = {
   },
   template: `
     <a-drawer
-      title="自定义抽奖"
+      title="自定义奖项"
       width="500px"
       placement="right"
       :visible="visible"
@@ -19,7 +19,7 @@ const CustomLuckyDrawDrawer = {
       <!-- 提示 -->
       <a-alert
         class="custom-hint" 
-        message="名称为必填项，如果名称为空，在抽奖选项中不显示！"
+        message="名称为必填，标签为选填，关闭本窗口会自动保存，并清理名称为空的奖项！"
         type="info"
         show-icon
       />
@@ -34,7 +34,7 @@ const CustomLuckyDrawDrawer = {
         <div style="margin-left: 20px;">标签：</div>
         <a-input
           class="custom-item-input-tag"
-          placeholder="必须为数字"
+          placeholder="填数字，且大于0"
           v-model="item.tag"
         />
         <a-button
@@ -149,7 +149,7 @@ new Vue({
         <a-icon type="setting" />
       </a-button>
       <!-- 提示 -->
-      <span class="import-hint">小提示：上传名单只支持 .xlsx、.xls、.csv 文件格式，纯名单即可！</span>
+      <span class="import-hint">小提示：上传名单只支持 .xlsx、.xls、.csv 文件格式，纯名单即可！已中奖用户不会重复中奖！</span>
       <!-- 自定义抽奖组件 -->
       <custom-lucky-draw-drawer ref="custom-lucky-draw-drawer"></custom-lucky-draw-drawer>
     </div>

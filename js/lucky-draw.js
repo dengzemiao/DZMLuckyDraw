@@ -12,10 +12,35 @@ new Vue({
           <div v-if="!users.length && !surplusUsers.length" class="ucky-draw-empty">老板大气，已经人人中奖了！</div>
         </div>
       </div>
-      <!-- 设置人数，并开始抽奖 -->
+      <!-- 设置奖项，人数，并开始抽奖 -->
       <div class="lucky-draw-item">
-        <a-input :disabled="isLuckyDraw" v-model="numberPeople" placeholder="本轮抽奖人数" />
-        <a-button @click="luckyDraw">{{ isLuckyDraw ?  luckyDrawTime ? '停止抽奖' : '结束本轮' : '开始抽奖' }}</a-button>
+        <!-- 设置奖项 -->
+        <a-select
+          v-if="modeType == 1"
+          class="lucky-draw-custom"
+          placeholder="请选择奖项"
+          :disabled="isLuckyDraw"
+          @change="handleModeTypeChange"
+        >
+          <a-select-option
+            v-for="(item, index) in customs"
+            :key="index"
+            :value="item.tag"
+          >
+            {{ item.name }}
+          </a-select-option>
+        </a-select>
+        <!-- 设置抽奖人数 -->
+        <a-input
+          :class="modeType == 1 ? 'lucky-draw-number-custom' : 'lucky-draw-number'"
+          :disabled="isLuckyDraw"
+          v-model="numberPeople"
+          placeholder="本轮抽奖人数"
+        />
+        <!-- 抽奖按钮 -->
+        <a-button @click="luckyDraw">
+          {{ isLuckyDraw ?  luckyDrawTime ? '停止抽奖' : '结束本轮' : '开始抽奖' }}
+        </a-button>
       </div>
     </div>
   `,
@@ -31,8 +56,13 @@ new Vue({
       // 滚动名单
       users: [],
       lastUsers: [],
+      // 0 默认抽奖模式，1 自定义抽奖模式
+      modeType: 0,
       // 自定义奖项列表
       customs: [],
+      customTag: undefined,
+      // 是否选择奖项
+      isCustomTag: false,
       // 剩余未中奖人数
       surplusUsers: [],
       // 滚动定时器
@@ -40,12 +70,24 @@ new Vue({
     }
   },
   mounted () {
+    // 获取模式
+    const modeType = sessionStorage.getItem('modeType')
+    if (modeType) {
+      this.modeType = Number(modeType)
+    } else {
+      this.modeType = 0
+    }
     // 获取自定义列表
     this.customs = JSON.parse(sessionStorage.getItem('customs')) || []
     // 剩余未中奖人数
     this.surplusUsers = [...users]
   },
   methods: {
+    // 切换奖项
+    handleModeTypeChange (e) {
+      this.customTag = e
+      this.isCustomTag = true
+    },
     luckyDraw () {
       // 是否在抽奖
       if (this.isLuckyDraw) {
@@ -54,6 +96,10 @@ new Vue({
         this.stopLuckyDraw()
       } else {
         // 准备开始抽奖
+        if (this.modeType == 1 && !this.isCustomTag) {
+          this.$message.error('请选择奖项')
+          return
+        }
         if (!this.numberPeople) {
           this.$message.error('请设置抽奖人数')
           return
@@ -130,12 +176,25 @@ new Vue({
       const lastUsers = []
       // 标记用户
       surplusUsers.forEach(user => {
-        if (user.number > 0 && user.number == this.number) {
-          if (lastUsers.length < this.numberPeople) {
-            lastUsers.push(user)
-            const index = this.surplusUsers.indexOf(user)
-            if (index !== -1) { this.surplusUsers.splice(index, 1) }
-          }
+        // 编号有值
+        if (user.number > 0) {
+          if (this.modeType == 0) { // 默认抽奖模式
+            if (user.number == this.number) {
+              if (lastUsers.length < this.numberPeople) {
+                lastUsers.push(user)
+                const index = this.surplusUsers.indexOf(user)
+                if (index !== -1) { this.surplusUsers.splice(index, 1) }
+              }
+            }
+          } else if (this.modeType == 1) { // 自定义奖项模式
+            if (user.number == this.customTag && this.customTag != 0) {
+              if (lastUsers.length < this.numberPeople) {
+                lastUsers.push(user)
+                const index = this.surplusUsers.indexOf(user)
+                if (index !== -1) { this.surplusUsers.splice(index, 1) }
+              }
+            }
+          } else {}
         }
       })
       // 随机用户

@@ -20,23 +20,46 @@ body {
     opacity: 1.0;
   }
 }
-.lucky-draw-item {
+.lucky-draw-item, .lucky-draw-item-custom {
   position: absolute;
   display: flex;
   white-space: nowrap;
-  width: 200px;
   left: 15px;
   bottom: 15px;
 }
-.ant-input, .ant-btn {
-  background-color: #000000;
+.lucky-draw-custom {
+  width: 150px;
+}
+.lucky-draw-number, .lucky-draw-number-custom {
+  width: 150px;
+}
+.ant-input, .ant-btn, .ant-select-selection, .ant-select-arrow {
+  background-color: #000;
   border-radius: 0px;
   border-color: rgba(127,255,255,0.75);
   color: rgba(255,255,255,0.75);
   text-shadow: 0 0 10px rgba(0,255,255,0.95);
 }
-.ant-input {
+.ant-select-dropdown {
+  background-color: rgba(0,127,127, 0.5);
+}
+.ant-select-dropdown-menu-item {
+  color: rgba(255,255,255,0.75) !important;
+  text-shadow: 0 0 10px rgba(0,255,255,0.95);
+}
+.ant-select-dropdown-menu-item:hover, .ant-select-dropdown-menu-item-active, .ant-select-dropdown-menu-item-selected {
+  background-color: rgba(0,127,127, 0.7) !important;
+}
+.ant-select-selection {
+  border-right: 0px;
   border-top-left-radius: 5px;
+  background: #000 !important;
+}
+.lucky-draw-number .ant-input {
+  border-top-left-radius: 5px;
+}
+.lucky-draw-number-custom .ant-input {
+  border-top-left-radius: 0px;
 }
 .ant-btn {
   border-left: 0px;
