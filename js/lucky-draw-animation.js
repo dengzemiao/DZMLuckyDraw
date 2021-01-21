@@ -1,6 +1,6 @@
-var users = JSON.parse(sessionStorage.getItem('users'))
+var users = JSON.parse(sessionStorage.getItem('users')) || []
 
-if (!users || !users.length) {
+if (!users.length) {
 	users = [{
 		id: 0,
 		name: 'Test',

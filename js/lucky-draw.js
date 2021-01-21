@@ -31,6 +31,8 @@ new Vue({
       // 滚动名单
       users: [],
       lastUsers: [],
+      // 自定义奖项列表
+      customs: [],
       // 剩余未中奖人数
       surplusUsers: [],
       // 滚动定时器
@@ -38,6 +40,8 @@ new Vue({
     }
   },
   mounted () {
+    // 获取自定义列表
+    this.customs = JSON.parse(sessionStorage.getItem('customs')) || []
     // 剩余未中奖人数
     this.surplusUsers = [...users]
   },

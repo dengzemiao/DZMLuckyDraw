@@ -1,5 +1,104 @@
+// 自定义抽奖弹窗组件
+const CustomLuckyDrawDrawer = {
+  data () {
+    return {
+      // 显示状态
+      visible: false,
+      // 自定义列表
+      customs: []
+    }
+  },
+  template: `
+    <a-drawer
+      title="自定义抽奖"
+      width="500px"
+      placement="right"
+      :visible="visible"
+      @close="onClose"
+    >
+      <!-- 提示 -->
+      <a-alert
+        class="custom-hint" 
+        message="名称为必填项，如果名称为空，在抽奖选项中不显示！"
+        type="info"
+        show-icon
+      />
+      <!-- 自定义列表 -->
+      <div class="custom-item" v-for="(item, index) in customs" :key="index">
+        <div>名称：</div>
+        <a-input
+          class="custom-item-input-name"
+          placeholder="例如：一等奖"
+          v-model="item.name"
+        />
+        <div style="margin-left: 20px;">标签：</div>
+        <a-input
+          class="custom-item-input-tag"
+          placeholder="必须为数字"
+          v-model="item.tag"
+        />
+        <a-button
+          class="custom-item-delete"
+          type="primary"
+          shape="circle"
+          size="small"
+          @click="touchDelete(index)"
+        >
+        一
+        </a-button>
+      </div>
+      <!-- 添加按钮 -->
+      <a-button
+        class="custom-add-btn"
+        type="dashed"
+        @click="touchAdd"
+      >
+        新建奖项
+      </a-button>
+    </a-drawer>
+  `,
+  methods: {
+    // 显示抽屉
+    showDrawer () {
+      // 获取自定义列表
+      this.customs = JSON.parse(sessionStorage.getItem('customs')) || []
+      // 显示
+      this.visible = true
+    },
+    // 关闭抽屉
+    onClose () {
+      // 过滤空名称奖项
+      const customs = this.customs.filter(item => {
+        return !!item.name
+      })
+      // 转成 json
+      const jsonString = JSON.stringify(customs)
+      // 存储到 sessionstorage
+      sessionStorage.setItem('customs', jsonString)
+      // 关闭窗口
+      this.visible = false
+    },
+    // 新增
+    touchAdd () {
+      const custom = {
+        name: undefined,
+        tag: undefined
+      }
+      this.customs.push(custom)
+    },
+    // 删除
+    touchDelete (index) {
+      this.customs.splice(index, 1)
+    }
+  }
+}
+
+// 主视图
 new Vue({
   el: '#app',
+  components: {
+    CustomLuckyDrawDrawer
+  },
   template: `
     <div class="import-view">
       <!-- 上传名单 -->
@@ -16,6 +115,7 @@ new Vue({
           :loading="isLoading"
         >
           {{ isSuccess ? '更新名单' : '上传名单' }}
+          <a-icon type="upload" />
         </a-button>
       </a-upload>
       <!-- 进入抽奖池 -->
@@ -27,13 +127,37 @@ new Vue({
         @click="touchLuckyDrawPage"
       >
         进入抽奖池
+        <a-icon type="crown" />
+      </a-button>
+      <!-- 切换模式 -->
+      <a-select
+        class="import-mode"
+        v-model="modeType"
+        @change="handleImportModeChange"
+      >
+        <a-select-option :value="0">默认抽奖模式</a-select-option>
+        <a-select-option :value="1">自定义抽奖模式</a-select-option>
+      </a-select>
+      <!-- 设置按钮 -->
+      <a-button
+        v-if="modeType == 1"
+        class="import-setting"
+        type="primary"
+        shape="circle"
+        @click="touchCustom"
+      >
+        <a-icon type="setting" />
       </a-button>
       <!-- 提示 -->
       <span class="import-hint">小提示：上传名单只支持 .xlsx、.xls、.csv 文件格式，纯名单即可！</span>
+      <!-- 自定义抽奖组件 -->
+      <custom-lucky-draw-drawer ref="custom-lucky-draw-drawer"></custom-lucky-draw-drawer>
     </div>
   `,
   data () {
     return {
+      // 0 默认抽奖模式，1 自定义抽奖模式
+      modeType: 0,
       // 上传文件列表
       fileList: [],
       // 上传状态
@@ -44,10 +168,28 @@ new Vue({
       users: []
     }
   },
+  created () {
+    // 初始化数据
+    const modeType = sessionStorage.getItem('modeType')
+    if (modeType) {
+      this.modeType = Number(modeType)
+    } else {
+      this.modeType = 0
+    }
+  },
   methods: {
     // 跳转
     touchLuckyDrawPage () {
       window.location.href = './lucky-draw.html'
+    },
+    // 抽奖模式切换
+    handleImportModeChange (e) {
+      // 存储到 sessionstorage
+      sessionStorage.setItem('modeType', e)
+    },
+    // 自定义抽奖组件
+    touchCustom () {
+      this.$refs["custom-lucky-draw-drawer"].showDrawer()
     },
     // 上传之前检查
     beforeUpload (file, fileList) {
