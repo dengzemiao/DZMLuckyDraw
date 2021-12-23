@@ -6,6 +6,10 @@ HTML 5 网页端年会抽奖源码，只需要导入名单列表即可，可内�
 
 内定功能：支持
 
+导出中奖名单：支持
+
+代码博客地址：[CSDN](https://blog.csdn.net/zz00008888/article/details/117024570)
+
 # 使用说明
 
     0、index.html: 主入口
