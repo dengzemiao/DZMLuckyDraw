@@ -20,7 +20,7 @@ body {
     opacity: 1.0;
   }
 }
-.lucky-draw-item, .lucky-draw-item-custom {
+.lucky-draw-tool-left, .lucky-draw-item-custom {
   position: absolute;
   display: flex;
   white-space: nowrap;
@@ -61,7 +61,7 @@ body {
 .lucky-draw-number-custom .ant-input {
   border-top-left-radius: 0px;
 }
-.ant-btn {
+.lucky-draw-tool-left .ant-btn {
   border-left: 0px;
   border-bottom-right-radius: 5px;
 }
@@ -131,4 +131,15 @@ body {
   font-weight: 700;
   color: rgba(255,255,255,0.75);
   text-shadow: 0 0 10px rgba(0,255,255,0.95);
+}
+/* 右边工具栏 */
+.lucky-draw-tool-right {
+  position: absolute;
+  display: flex;
+  white-space: nowrap;
+  right: 15px;
+  bottom: 15px;
+}
+.lucky-draw-tool-right .ant-btn {
+  border-radius: 50%;
 }

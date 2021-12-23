@@ -13,7 +13,7 @@ new Vue({
         </div>
       </div>
       <!-- 设置奖项，人数，并开始抽奖 -->
-      <div class="lucky-draw-item">
+      <div class="lucky-draw-tool-left">
         <!-- 设置奖项 -->
         <a-select
           v-if="modeType == 1"
@@ -26,6 +26,7 @@ new Vue({
             v-for="(item, index) in customs"
             :key="index"
             :value="item.tag"
+            :item="item"
           >
             {{ item.name }}
           </a-select-option>
@@ -41,6 +42,10 @@ new Vue({
         <a-button @click="luckyDraw">
           {{ isLuckyDraw ?  luckyDrawTime ? '停止抽奖' : '结束本轮' : '开始抽奖' }}
         </a-button>
+      </div>
+      <!-- 右边工具栏 -->
+      <div class="lucky-draw-tool-right" @click="downloadWinningUsers">
+        <a-button shape="circle" icon="download" />
       </div>
     </div>
   `,
@@ -60,9 +65,10 @@ new Vue({
       modeType: 0,
       // 自定义奖项列表
       customs: [],
-      customTag: undefined,
-      // 是否选择奖项
-      isCustomTag: false,
+      // 当前选中奖项
+      custom: undefined,
+      // 中奖人员
+      winningUsers: [],
       // 剩余未中奖人数
       surplusUsers: [],
       // 滚动定时器
@@ -84,9 +90,9 @@ new Vue({
   },
   methods: {
     // 切换奖项
-    handleModeTypeChange (e) {
-      this.customTag = e
-      this.isCustomTag = true
+    handleModeTypeChange (value, e) {
+      // 记录奖项
+      this.custom = e.data.attrs.item
     },
     luckyDraw () {
       // 是否在抽奖
@@ -96,7 +102,7 @@ new Vue({
         this.stopLuckyDraw()
       } else {
         // 准备开始抽奖
-        if (this.modeType == 1 && !this.isCustomTag) {
+        if (this.modeType == 1 && !this.custom) {
           this.$message.error('请选择奖项')
           return
         }
@@ -139,6 +145,7 @@ new Vue({
           clearInterval(this.luckyDrawTime)
           this.luckyDrawTime = undefined
           this.users = this.lastUsers
+          this.saveWinningUsers()
         } else {
           this.isLuckyDraw = false
           this.numberPeople = undefined
@@ -187,7 +194,7 @@ new Vue({
               }
             }
           } else if (this.modeType == 1) { // 自定义奖项模式
-            if (user.number == this.customTag && this.customTag != 0) {
+            if (user.number == this.custom.tag && this.custom.tag != 0) {
               if (lastUsers.length < this.numberPeople) {
                 lastUsers.push(user)
                 const index = this.surplusUsers.indexOf(user)
@@ -221,6 +228,87 @@ new Vue({
       }
       // 记录数据
       this.lastUsers = lastUsers
+    },
+    // 保存中奖名单
+    saveWinningUsers () {
+      // 处理名称
+      var usernames = []
+      this.lastUsers.forEach(user => {
+        if (user.department) {
+          usernames.push(`${user.name}(${user.department})`)
+        } else {
+          usernames.push(user.name)
+        }
+      })
+      // 记录
+      this.winningUsers.push({
+        round: this.number,
+        award: this.custom ? this.custom.name : '',
+        user: usernames.join('、')
+      })
+      // 保存
+      localStorage.setItem('winning-users', JSON.stringify(this.winningUsers))
+    },
+    // 下载中奖名单
+    downloadWinningUsers () {
+      // 获取中奖名单
+      const winningUsers = JSON.parse(localStorage.getItem('winning-users')) || []
+      // 列名称
+      const columns = [
+        {
+          name: '轮数',
+          field: 'round',
+          style: {
+            color: '#0000FF',
+            alignmentHor: 'Center',
+            alignmentVer: 'Center'
+          }
+        },
+        {
+          name: '奖项',
+          field: 'award',
+          style: {
+            color: '#0000FF',
+            alignmentHor: 'Center',
+            alignmentVer: 'Center'
+          }
+        },
+        {
+          name: '中奖用户',
+          field: 'user',
+          style: {
+            colWidth: 888,
+            color: '#0000FF',
+            borderColor: '#D5DBEA',
+            backgroundColor: '#00FFFF'
+          }
+        }
+      ]
+      // 将要保存的 sheets 数据源
+      const sheets = [
+        {
+          // 单个 sheet 名字
+          name: '中奖名单',
+          // 单个 sheet 数据源
+          data: winningUsers,
+          // 单个 sheet 列名称与读取key
+          columns: columns
+        }
+      ]
+      // 下载
+      EXDownloadManager(sheets, function (item, field, json, sheetIndex, row, col, columnCount, rowCount) {
+        // 处理标题行
+        if (row === 0) {
+          // 内容横向排版：Left、Center、Right
+          item.style.alignmentHor = 'Center'
+          // 内容竖向排版：Top、Center、Bottom
+          item.style.alignmentVer = 'Center'
+          // 行高
+          item.style.rowHeight = 32
+        }
+        // 返回
+        return item
+      })
     }
   }
 })
