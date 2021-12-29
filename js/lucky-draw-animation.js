@@ -128,11 +128,11 @@ function init() {
 	renderer.domElement.style.position = 'absolute';
 	document.getElementById( 'container' ).appendChild( renderer.domElement );
 
-	controls = new THREE.TrackballControls( camera, renderer.domElement );
-	controls.rotateSpeed = 0.5;
-	controls.minDistance = 300;
-	controls.maxDistance = 2500;
-	controls.addEventListener( 'change', render );
+	// controls = new THREE.TrackballControls( camera, renderer.domElement );
+	// controls.rotateSpeed = 0.5;
+	// controls.minDistance = 300;
+	// controls.maxDistance = 2500;
+	// controls.addEventListener( 'change', render );
 
 	// transform( targets.grid, 2000 );
 	// startAnimate()
@@ -170,7 +170,7 @@ function onWindowResize() {
 function animate() {
 	requestAnimationFrame( animate );
 	TWEEN.update();
-	controls.update();
+	// controls.update();
 }
 
 function render() {
