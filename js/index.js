@@ -61,7 +61,7 @@ const CustomLuckyDrawDrawer = {
     // 显示抽屉
     showDrawer () {
       // 获取自定义列表
-      this.customs = JSON.parse(sessionStorage.getItem('customs')) || []
+      this.customs = JSON.parse(localStorage.getItem('customs')) || []
       // 显示
       this.visible = true
     },
@@ -73,10 +73,12 @@ const CustomLuckyDrawDrawer = {
       })
       // 转成 json
       const jsonString = JSON.stringify(customs)
-      // 存储到 sessionstorage
-      sessionStorage.setItem('customs', jsonString)
+      // 存储到 localStorage
+      localStorage.setItem('customs', jsonString)
       // 关闭窗口
       this.visible = false
+      // 回调
+      this.$emit('close')
     },
     // 新增
     touchAdd () {
@@ -103,6 +105,7 @@ new Vue({
     <div class="import-view">
       <!-- 上传名单 -->
       <a-upload
+        class="operation-button import-users"
         :disabled="isLoading"
         accept=".xlsx,.xls,.csv"
         :fileList="[]"
@@ -110,19 +113,22 @@ new Vue({
         :customRequest="customRequest" 
       >
         <a-button
-          class="import-button"
-          :type="isSuccess ? 'primary' : 'default'"
+          :type="isImportUsers ? 'primary' : 'default'"
           :loading="isLoading"
         >
-          {{ isSuccess ? '更新名单' : '上传名单' }}
+          {{ isImportUsers ? '更新名单' : '上传名单' }}
           <a-icon type="upload" />
         </a-button>
+        <a-icon
+          v-if="isImportUsers"
+          class="operation-success-icon"
+          type="check-circle"
+        />
       </a-upload>
       <!-- 进入抽奖池 -->
-      <!-- <a-button class="import-button-bg" type="danger" :disabled="isLoading || !isSuccess">进入抽奖池</a-button> -->
       <a-button
-        class="import-button-bg"
-        :type="isSuccess ? 'danger' : 'default'"
+        class="operation-button"
+        :type="isImportUsers ? 'danger' : 'default'"
         :disabled="isLoading"
         @click="touchLuckyDrawPage"
       >
@@ -130,28 +136,42 @@ new Vue({
         <a-icon type="crown" />
       </a-button>
       <!-- 切换模式 -->
-      <a-select
-        class="import-mode"
-        v-model="modeType"
-        @change="handleImportModeChange"
-      >
-        <a-select-option :value="0">默认抽奖模式</a-select-option>
-        <a-select-option :value="1">自定义奖项模式</a-select-option>
-      </a-select>
+      <div class="operation-button import-mode">
+        <a-select
+          v-model="modeType"
+          @change="handleImportModeChange"
+        >
+          <a-select-option :value="0">默认抽奖模式</a-select-option>
+          <a-select-option :value="1">自定义奖项模式</a-select-option>
+        </a-select>
+        <a-icon
+          v-if="modeType == 1 && isImportMode"
+          class="operation-success-icon"
+          type="check-circle"
+        />
+      </div>
       <!-- 设置按钮 -->
       <a-button
         v-if="modeType == 1"
-        class="import-setting"
+        class="operation-button import-setting"
         type="primary"
         shape="circle"
         @click="touchCustom"
       >
         <a-icon type="setting" />
       </a-button>
+      <!-- 重置按钮 -->
+      <a-button
+        class="operation-button"
+        @click="clearData"
+      >
+        清空数据 - 名单、奖项配置、抽奖结果
+        <a-icon type="reload" />
+      </a-button>
       <!-- 提示 -->
       <span class="import-hint">小提示：上传名单只支持 .xlsx、.xls、.csv 文件格式，纯名单即可！已中奖用户不会重复中奖！</span>
       <!-- 自定义抽奖组件 -->
-      <custom-lucky-draw-drawer ref="custom-lucky-draw-drawer"></custom-lucky-draw-drawer>
+      <custom-lucky-draw-drawer ref="custom-lucky-draw-drawer" @close="onCloseCustom"></custom-lucky-draw-drawer>
     </div>
   `,
   data () {
@@ -162,20 +182,27 @@ new Vue({
       fileList: [],
       // 上传状态
       isLoading: false,
-      // 是否上传名单成功
-      isSuccess: false,
       // 用户列表
-      users: []
+      users: [],
+      // 是否导入了用户列表
+      isImportUsers: false,
+      // 是否有自定义奖项配置
+      isImportMode: false
     }
   },
   created () {
-    // 初始化数据
-    const modeType = sessionStorage.getItem('modeType')
+    // 获取抽奖模式
+    const modeType = localStorage.getItem('modeType')
     if (modeType) {
       this.modeType = Number(modeType)
     } else {
       this.modeType = 0
     }
+    // 获取抽奖用户
+    const users = localStorage.getItem('users')
+    this.isImportUsers = users ? JSON.parse(users).length : false
+    // 获取自定义抽奖项
+    this.onCloseCustom()
   },
   methods: {
     // 跳转
@@ -184,12 +211,28 @@ new Vue({
     },
     // 抽奖模式切换
     handleImportModeChange (e) {
-      // 存储到 sessionstorage
-      sessionStorage.setItem('modeType', e)
+      // 存储到 localStorage
+      localStorage.setItem('modeType', e)
     },
     // 自定义抽奖组件
     touchCustom () {
       this.$refs["custom-lucky-draw-drawer"].showDrawer()
+    },
+    // 关闭自定义抽奖窗口
+    onCloseCustom () {
+      const customs = localStorage.getItem('customs')
+      this.isImportMode = customs ? JSON.parse(customs).length : false
+    },
+    // 清空数据
+    clearData () {
+      // 清空数据
+      localStorage.clear()
+      // 清空状态
+      this.isImportUsers = false
+      this.isImportMode = false
+      this.modeType = 0
+      // 提示
+      this.$message.success('清理成功')
     },
     // 上传之前检查
     beforeUpload (file, fileList) {
@@ -200,15 +243,11 @@ new Vue({
       // 数据记录
       this.users = []
       // 进入加载
-      this.isSuccess = false
       this.isLoading = true
       // 开始解析数据
       formJson(data.file, (code, sheets) => {
         // 解析成功且有数据
         if (code === 0) {
-          // 导入成功
-          this.isSuccess = true
-          this.$message.success('上传名单成功')
           // 解析数据
           sheets.forEach(sheet => {
             // 单个 sheet
@@ -225,15 +264,23 @@ new Vue({
           })
           // 解析成 JSON 字符串
           const jsonString = JSON.stringify(this.users)
-          // 存储到 sessionstorage
-          sessionStorage.setItem('users', jsonString)
+          // 存储到 localStorage
+          localStorage.setItem('users', jsonString)
+          // 标记为有数据
+          this.isImportUsers = this.users.length
+          // 名单是否为空
+          if (this.users.length) {
+            // 名单有值
+            this.$message.success('上传名单成功')
+          } else {
+            // 名单为空
+            this.$message.error('上传名单是空的，打算抽空气么？')
+          }
           // 结束加载
           this.isLoading = false
         } else {
           // 结束加载
           this.isLoading = false
-          // 导入失败
-          this.isSuccess = false
           this.$message.success('上传名单失败')
         }
       })

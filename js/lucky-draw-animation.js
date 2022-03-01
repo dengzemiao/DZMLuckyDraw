@@ -1,4 +1,4 @@
-var users = JSON.parse(sessionStorage.getItem('users')) || []
+var users = JSON.parse(localStorage.getItem('users')) || []
 
 if (!users.length) {
 	users = [{

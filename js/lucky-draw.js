@@ -25,7 +25,7 @@ new Vue({
           <a-select-option
             v-for="(item, index) in customs"
             :key="index"
-            :value="item.tag"
+            :value="index"
             :item="item"
           >
             {{ item.name }}
@@ -45,7 +45,7 @@ new Vue({
       </div>
       <!-- 右边工具栏 -->
       <div class="lucky-draw-tool-right" @click="downloadWinningUsers">
-        <a-button shape="circle" icon="download" />
+        <a-button shape="circle" icon="download" :disabled="isLuckyDraw" />
       </div>
     </div>
   `,
@@ -77,16 +77,33 @@ new Vue({
   },
   mounted () {
     // 获取模式
-    const modeType = sessionStorage.getItem('modeType')
+    const modeType = localStorage.getItem('modeType')
     if (modeType) {
       this.modeType = Number(modeType)
     } else {
       this.modeType = 0
     }
     // 获取自定义列表
-    this.customs = JSON.parse(sessionStorage.getItem('customs')) || []
+    this.customs = JSON.parse(localStorage.getItem('customs')) || []
     // 剩余未中奖人数
     this.surplusUsers = [...users]
+    // 获取中奖用户
+    this.winningUsers = JSON.parse(localStorage.getItem('winning-users')) || []
+    // 初始化轮数
+    this.tempNumber = this.winningUsers.length
+    this.number = this.tempNumber + 1
+    // 清理中奖用户
+    this.winningUsers.forEach(item => {
+      // 解析ids
+      const ids = item.ids.split('、').map(Number)
+      // 移除中奖id
+      ids.forEach(id => {
+        // 定位中奖用户
+        const index = this.surplusUsers.findIndex(user => user.id === id)
+        // 从剩余抽奖用户名单中移除
+        if (index !== -1) { this.surplusUsers.splice(index, 1) }
+      })
+    })
   },
   methods: {
     // 切换奖项
@@ -233,26 +250,29 @@ new Vue({
     saveWinningUsers () {
       // 处理名称
       var usernames = []
+      var userids = []
       this.lastUsers.forEach(user => {
+        // 名称
         if (user.department) {
           usernames.push(`${user.name}(${user.department})`)
         } else {
           usernames.push(user.name)
         }
+        // id
+        userids.push(user.id)
       })
       // 记录
       this.winningUsers.push({
         round: this.number,
         award: this.custom ? this.custom.name : '',
-        user: usernames.join('、')
+        names: usernames.join('、'),
+        ids: userids.join('、')
       })
       // 保存
       localStorage.setItem('winning-users', JSON.stringify(this.winningUsers))
     },
     // 下载中奖名单
     downloadWinningUsers () {
-      // 获取中奖名单
-      const winningUsers = JSON.parse(localStorage.getItem('winning-users')) || []
       // 列名称
       const columns = [
         {
@@ -275,7 +295,7 @@ new Vue({
         },
         {
           name: '中奖用户',
-          field: 'user',
+          field: 'names',
           style: {
             colWidth: 888,
             color: '#0000FF',
@@ -290,7 +310,7 @@ new Vue({
           // 单个 sheet 名字
           name: '中奖名单',
           // 单个 sheet 数据源
-          data: winningUsers,
+          data: this.winningUsers,
           // 单个 sheet 列名称与读取key
           columns: columns
         }

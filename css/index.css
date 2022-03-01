@@ -19,18 +19,23 @@
     opacity: 1.0;
   }
 }
-.import-button {
+.operation-button {
+  position: relative;
+  margin-top: 30px;
+}
+.operation-button:first-child {
   margin-top: 100px;
 }
-.import-button-bg {
-  margin-top: 30px;
-}
-.import-mode {
-  margin-top: 30px;
+.operation-success-icon {
+  position: absolute;
+  top: 8px;
+  right: -22px;
+  font-size: 16px;
+  color: #52C41A;
 }
 .import-setting {
   position: absolute;
-  top: 20px;
+  margin-top: 20px;
   right: 20px;
 }
 .import-hint {
