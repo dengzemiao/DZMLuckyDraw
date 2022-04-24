@@ -1,4 +1,4 @@
-// 自定义抽奖弹窗组件
+// 自定义抽签弹窗组件
 const CustomLuckyDrawDrawer = {
   data () {
     return {
@@ -10,16 +10,15 @@ const CustomLuckyDrawDrawer = {
   },
   template: `
     <a-drawer
-      title="自定义奖项"
-      width="500px"
+      title="自定义抽签项目"
+      width="380px"
       placement="right"
       :visible="visible"
       @close="onClose"
     >
       <!-- 提示 -->
       <a-alert
-        class="custom-hint" 
-        message="名称为必填，标签为选填，关闭本窗口会自动保存，并清理名称为空的奖项！"
+        message="名称为必填，标签为选填，关闭本窗口会自动保存，并清理名称为空的项目！"
         type="info"
         show-icon
       />
@@ -28,13 +27,13 @@ const CustomLuckyDrawDrawer = {
         <div>名称：</div>
         <a-input
           class="custom-item-input-name"
-          placeholder="例如：一等奖"
+          placeholder="如一等奖"
           v-model="item.name"
         />
         <div style="margin-left: 20px;">标签：</div>
         <a-input
           class="custom-item-input-tag"
-          placeholder="填数字，且大于0"
+          placeholder="数字>0"
           v-model="item.tag"
         />
         <a-button
@@ -53,7 +52,7 @@ const CustomLuckyDrawDrawer = {
         type="dashed"
         @click="touchAdd"
       >
-        新建奖项
+        新建抽签项目
       </a-button>
     </a-drawer>
   `,
@@ -67,7 +66,7 @@ const CustomLuckyDrawDrawer = {
     },
     // 关闭抽屉
     onClose () {
-      // 过滤空名称奖项
+      // 过滤空名称项目
       const customs = this.customs.filter(item => {
         return !!item.name
       })
@@ -103,81 +102,174 @@ new Vue({
   },
   template: `
     <div class="import-view">
-      <!-- 上传名单 -->
-      <a-upload
-        class="operation-button import-users"
-        :disabled="isLoading"
-        accept=".xlsx,.xls,.csv"
-        :fileList="[]"
-        :beforeUpload="beforeUpload"
-        :customRequest="customRequest" 
+
+    <!-- 标题 Lucky Draw-->
+    <div class="setting-row-style"><span class="font-title">Lucky Draw</span></div>
+
+    <!-- 设置抽签主题 -->
+    <div class="setting-row-style"><span class="font-label">抽签主题</span></div>
+    <div class="setting-row-style">
+      <a-input
+        class="setting-input-title"
+        v-model="isTitle"
+        @change="handleTitleChange"
+        placeholder="抽签主题"
+      />
+    </div>
+
+    <!-- 设置 -->
+    <div class="setting-row-style"><span class="font-label">设置</span></div>
+
+    <!-- 切换模式 -->
+    <div class="setting-row-style">
+      <a-select
+        class="setting-selection"
+        v-model="modeType"
+        @change="handleImportModeChange"
       >
-        <a-button
-          :type="isImportUsers ? 'primary' : 'default'"
-          :loading="isLoading"
-        >
-          {{ isImportUsers ? '更新名单' : '上传名单' }}
-          <a-icon type="upload" />
-        </a-button>
-        <a-icon
-          v-if="isImportUsers"
-          class="operation-success-icon"
-          type="check-circle"
-        />
-      </a-upload>
-      <!-- 进入抽奖池 -->
-      <a-button
-        class="operation-button"
-        :type="isImportUsers ? 'danger' : 'default'"
-        :disabled="isLoading"
-        @click="touchLuckyDrawPage"
-      >
-        进入抽奖池
-        <a-icon type="crown" />
-      </a-button>
-      <!-- 切换模式 -->
-      <div class="operation-button import-mode">
-        <a-select
-          v-model="modeType"
-          @change="handleImportModeChange"
-        >
-          <a-select-option :value="0">默认抽奖模式</a-select-option>
-          <a-select-option :value="1">自定义奖项模式</a-select-option>
-        </a-select>
-        <a-icon
-          v-if="modeType == 1 && isImportMode"
-          class="operation-success-icon"
-          type="check-circle"
-        />
-      </div>
-      <!-- 设置按钮 -->
+        <a-select-option :value="0">默认抽签模式</a-select-option>
+        <a-select-option :value="1">自定义抽签模式</a-select-option>
+      </a-select>
+      <a-icon
+        v-if="modeType == 1 && isImportMode"
+        class="operation-success-icon"
+        type="check-circle"
+      />
       <a-button
         v-if="modeType == 1"
-        class="operation-button import-setting"
+        class="operation-import-setting"
         type="primary"
         shape="circle"
         @click="touchCustom"
       >
         <a-icon type="setting" />
       </a-button>
-      <!-- 重置按钮 -->
-      <a-button
-        class="operation-button"
-        @click="clearData"
-      >
-        清空数据 - 名单、奖项配置、抽奖结果
-        <a-icon type="reload" />
-      </a-button>
-      <!-- 提示 -->
-      <span class="import-hint">小提示：上传名单只支持 .xlsx、.xls、.csv 文件格式，纯名单即可！已中奖用户不会重复中奖！</span>
-      <!-- 自定义抽奖组件 -->
-      <custom-lucky-draw-drawer ref="custom-lucky-draw-drawer" @close="onCloseCustom"></custom-lucky-draw-drawer>
     </div>
+
+    <!-- 是否允许重复抽签 -->
+    <div class="setting-row-style">
+      <a-select
+        class="setting-selection"
+        v-model="modeDuplicate"
+        @change="handleDuplicateModeChange"
+      >
+        <a-select-option :value="0">允许重复抽签</a-select-option>
+        <a-select-option :value="1">禁止重复抽签</a-select-option>
+      </a-select>
+    </div>
+
+      <!-- 上传抽签清单 -->
+      <div class="setting-row-style">
+        <a-upload
+          :disabled="isLoading"
+          accept=".xlsx,.xls,.csv"
+          :fileList="[]"
+          :beforeUpload="beforeUpload"
+          :customRequest="customRequest"
+        >
+          <a-button
+            class="setting-button"
+            :type="isImportUsers ? 'primary' : 'default'"
+            :loading="isLoading"
+          >
+            {{ isImportUsers ? '更新清单' : '上传清单' }}
+            <a-icon type="upload" />
+            <a-icon
+              v-if="isImportUsers"
+              class="operation-success-icon"
+              type="check-circle"
+            />
+          </a-button>
+        </a-upload>
+      </div>
+      <!-- 提示 -->
+      <div class="setting-row-style">
+        <span class="font-hint">支持 .xlsx、.xls、.csv 文件格式</span>
+      </div>
+
+      <!-- 重置按钮 -->
+      <div class="setting-row-style">
+        <a-button
+          class="setting-button"
+          @click="clearData"
+        >
+          清空数据
+          <a-icon type="reload" />
+        </a-button>
+      </div>
+
+      <!-- 副标题 -->
+      <div class="setting-row-style"><span class="font-label">选择背景</span></div>
+
+      <!-- 背景为图案还是纯色 -->
+      <div class="setting-row-style">
+        <a-select
+          class="setting-selection"
+          v-model="isColor"
+          @change="handlebgModeChange"
+        >
+          <a-select-option :value="0">图案背景</a-select-option>
+          <a-select-option :value="1">纯色背景</a-select-option>
+        </a-select>
+      </div>
+
+      <table width="160px" align="center">
+        <tr>
+          <td width="120px">
+          <img
+            id="bg_Image"
+            class="setting-image"
+            :src="bgImageSrc"
+          />
+          </td>
+          <td width="40px">
+            <div>
+              <a-button
+                class="operation-spinbutton"
+                type="primary"
+                shape="circle"
+                @click="selectImage(0)"
+              >
+              <a-icon type="arrow-up" />
+            </div>
+            <div>
+              <a-button
+                class="operation-spinbutton"
+                type="primary"
+                shape="circle"
+                @click="selectImage(1)"
+              >
+              <a-icon type="arrow-down" />
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <!-- 自定义抽签项目组件 -->
+      <custom-lucky-draw-drawer ref="custom-lucky-draw-drawer" @close="onCloseCustom"></custom-lucky-draw-drawer>
+
+      <div class="setting-row-style"><span class="font-label">进入抽签界面</span></div>
+        <!-- 进入抽签界面 -->
+        <div class="setting-row-style">
+        <a-button
+          class="setting-button"
+          :type="isImportUsers ? 'danger' : 'default'"
+          :disabled="!(modeType == 0 && isImportUsers) && !((modeType == 1 && isImportMode) && isImportUsers)"
+          @click="touchLuckyDrawPage"
+        >
+          进入抽取界面
+          <a-icon type="crown"/>
+        </a-button>
+        </div>
+      </div>
+
   `,
   data () {
     return {
-      // 0 默认抽奖模式，1 自定义抽奖模式
+      // 0 默认抽签模式，1 自定义抽签模式
       modeType: 0,
+      // 0 允许重复抽签，1 不允许重复抽签
+      modeDuplicate: 0,
       // 上传文件列表
       fileList: [],
       // 上传状态
@@ -187,38 +279,119 @@ new Vue({
       // 是否导入了用户列表
       isImportUsers: false,
       // 是否有自定义奖项配置
-      isImportMode: false
+      isImportMode: false,
+      // 自定义标题
+      isTitle: undefined,
+      // 背景图片
+      bgImageSrc: undefined,
+      bgImageNumber: 9,
+      bgImageDir: ["image/background/picture/BG-", "image/background/color/BG-"],
+      bgImageFile: ["random", "01", "02", "03", "04", "05", "06", "07", "08", "09"],
+      bgImageIndex: 0,
+      isColor: 0,
     }
   },
   created () {
-    // 获取抽奖模式
+    // 获取抽签模式
     const modeType = localStorage.getItem('modeType')
     if (modeType) {
       this.modeType = Number(modeType)
     } else {
       this.modeType = 0
     }
-    // 获取抽奖用户
+    // 获取抽签模式
+    const modeDuplicate = localStorage.getItem('modeDuplicate')
+    if (modeDuplicate) {
+      this.modeDuplicate = Number(modeDuplicate)
+    } else {
+      this.modeDuplicate = 0
+    }
+
+    // 获取标题
+    const isTitle = localStorage.getItem('isTitle')
+    if (isTitle) {
+      this.isTitle = isTitle
+    } else {
+      this.isTitle = undefined
+    }
+
+    // 获取背景图片
+    const isColor = localStorage.getItem('isColor')
+    if (isColor) {
+        this.isColor = Number(isColor)
+    } else {
+      this.isColor = 0
+    }
+
+    const isbgImage = localStorage.getItem('isbgImage')
+    if (isbgImage) {
+      if(isbgImage < 0 || isbgImage > this.bgImageNumber) {
+        this.bgImageIndex = 0
+        localStorage.setItem('isbgImage', this.bgImageIndex)
+      } else {
+        this.bgImageIndex = isbgImage
+        localStorage.setItem('isbgImage', this.bgImageIndex)
+      }
+    } else {
+      this.bgImageIndex = 0
+    }
+    this.bgImageSrc = this.bgImageDir[this.isColor] + this.bgImageFile[this.bgImageIndex] + ".png"
+
+    // 获取抽签用户
     const users = localStorage.getItem('users')
     this.isImportUsers = users ? JSON.parse(users).length : false
-    // 获取自定义抽奖项
+    // 获取自定义抽签项
     this.onCloseCustom()
   },
   methods: {
+    // 更改选择背景图片
+    selectImage (e) {
+      var bgPhoto = document.getElementById("bg_Image");
+      if (e == 0 && this.bgImageIndex < (this.bgImageNumber)) {
+        this.bgImageIndex = parseInt(this.bgImageIndex) + 1
+        this.bgImageSrc = this.bgImageDir[this.isColor] + this.bgImageFile[this.bgImageIndex] + ".png"
+        bgPhoto.src = this.bgImageSrc
+        localStorage.setItem('isbgImage', this.bgImageIndex)
+      }
+      if (e == 1 && this.bgImageIndex > 0) {
+        this.bgImageIndex = parseInt(this.bgImageIndex) - 1
+        this.bgImageSrc = this.bgImageDir[this.isColor] + this.bgImageFile[this.bgImageIndex] + ".png"
+        bgPhoto.src = this.bgImageSrc
+        localStorage.setItem('isbgImage', this.bgImageIndex)
+      }
+    },
     // 跳转
     touchLuckyDrawPage () {
       window.location.href = './lucky-draw.html'
     },
-    // 抽奖模式切换
+    // 抽签模式切换
     handleImportModeChange (e) {
       // 存储到 localStorage
       localStorage.setItem('modeType', e)
     },
-    // 自定义抽奖组件
+    // 重复模式切换
+    handleDuplicateModeChange (e) {
+      // 存储到 localStorage
+      localStorage.setItem('modeDuplicate', e)
+    },
+    // 背景模式切换
+    handlebgModeChange (e) {
+      // 存储到 localStorage
+      localStorage.setItem('isColor', this.isColor)
+      this.bgImageSrc = this.bgImageDir[this.isColor] + this.bgImageFile[0] + ".png"
+      this.bgImageIndex = 0
+      localStorage.setItem('isbgImage', this.bgImageIndex)
+    },
+    // 保存标题
+    handleTitleChange () {
+      // 存储到 localStorage
+      localStorage.setItem('isTitle', this.isTitle)
+    },
+    // 自定义抽签组件
     touchCustom () {
       this.$refs["custom-lucky-draw-drawer"].showDrawer()
     },
-    // 关闭自定义抽奖窗口
+    // 关闭自定义抽签窗口
     onCloseCustom () {
       const customs = localStorage.getItem('customs')
       this.isImportMode = customs ? JSON.parse(customs).length : false
@@ -231,6 +404,10 @@ new Vue({
       this.isImportUsers = false
       this.isImportMode = false
       this.modeType = 0
+      this.modeDuplicate = 0
+      this.isTitle = undefined
+      this.bgImageIndex = 0
+      this.bgImageSrc = "CSS/BG/BG-random.png"
       // 提示
       this.$message.success('清理成功')
     },
@@ -238,7 +415,7 @@ new Vue({
     beforeUpload (file, fileList) {
       return true
     },
-    // 自定义上传名单
+    // 自定义上传清单
     customRequest (data) {
       // 数据记录
       this.users = []
@@ -268,20 +445,20 @@ new Vue({
           localStorage.setItem('users', jsonString)
           // 标记为有数据
           this.isImportUsers = this.users.length
-          // 名单是否为空
+          // 清单是否为空
           if (this.users.length) {
-            // 名单有值
-            this.$message.success('上传名单成功')
+            // 清单有值
+            this.$message.success('上传清单成功')
           } else {
-            // 名单为空
-            this.$message.error('上传名单是空的，打算抽空气么？')
+            // 清单为空
+            this.$message.error('上传清单是空的，请检查！')
           }
           // 结束加载
           this.isLoading = false
         } else {
           // 结束加载
           this.isLoading = false
-          this.$message.success('上传名单失败')
+          this.$message.success('上传清单失败')
         }
       })
     },
@@ -308,7 +485,7 @@ new Vue({
           department: isNumber ? '' : items[1],
           number: isNumber ? items[1] : 0
         }
-      } 
+      }
       // 如果有1个字段
       if (items.length >= 1) {
         return {

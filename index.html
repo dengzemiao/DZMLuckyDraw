@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>抽奖 - 首页</title>
+  <title>LuckyDraw - Setting</title>
   <link rel="stylesheet" href="./css/reset.css">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
   <style>
     body {
       overflow: hidden;
@@ -13,17 +14,17 @@
 </head>
 <body>
   <!-- 3D云层效果 -->
-  <script type="text/javascript" src="./lib/clouds/ThreeWebGL.js"></script> 
-  <script type="text/javascript" src="./lib/clouds/ThreeExtras.js"></script> 
-  <script type="text/javascript" src="./lib/clouds/Detector.js"></script> 
-  <script type="text/javascript" src="./lib/clouds/RequestAnimationFrame.js"></script> 
+  <script type="text/javascript" src="./lib/clouds/ThreeWebGL.js"></script>
+  <script type="text/javascript" src="./lib/clouds/ThreeExtras.js"></script>
+  <script type="text/javascript" src="./lib/clouds/Detector.js"></script>
+  <script type="text/javascript" src="./lib/clouds/RequestAnimationFrame.js"></script>
   <script id="vs" type="x-shader/x-vertex">
     varying vec2 vUv;
     void main() {
         vUv = uv;
         gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
     }
-  </script> 
+  </script>
   <script id="fs" type="x-shader/x-fragment">
     uniform sampler2D map;
     uniform vec3 fogColor;
@@ -37,7 +38,7 @@
       gl_FragColor.w *= pow( gl_FragCoord.z, 20.0 );
       gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );
     }
-  </script> 
+  </script>
   <script src="./lib/clouds/Clouds.js"></script>
 
   <!-- Vue -->
