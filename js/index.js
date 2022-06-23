@@ -165,7 +165,7 @@ new Vue({
         class="operation-button"
         @click="clearData"
       >
-        清空数据 - 名单、奖项配置、抽奖结果
+        清空所有数据
         <a-icon type="reload" />
       </a-button>
       <!-- 提示 -->
