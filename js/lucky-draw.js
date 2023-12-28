@@ -49,7 +49,7 @@ new Vue({
       </div>
     </div>
   `,
-  data () {
+  data() {
     return {
       // 当前第几轮抽奖
       number: 1,
@@ -75,7 +75,7 @@ new Vue({
       luckyDrawTime: undefined
     }
   },
-  mounted () {
+  mounted() {
     // 获取模式
     const modeType = localStorage.getItem('modeType')
     if (modeType) {
@@ -107,11 +107,11 @@ new Vue({
   },
   methods: {
     // 切换奖项
-    handleModeTypeChange (value, e) {
+    handleModeTypeChange(value, e) {
       // 记录奖项
       this.custom = e.data.attrs.item
     },
-    luckyDraw () {
+    luckyDraw() {
       // 是否在抽奖
       if (this.isLuckyDraw) {
         // 已经开始抽奖，只能停止抽奖
@@ -144,19 +144,25 @@ new Vue({
       }
     },
     // 开始抽奖
-    startLuckyDraw () {
+    startLuckyDraw() {
       if (this.tempNumber != this.number) {
         this.tempNumber = this.number
-        stopAnimate('sphere')
-        setTimeout(() => {
+        if (animateType === 'sphere') {
           this.isLuckyDraw = true
           this.infiniteCycle()
           this.GetUsers()
-        }, 2000);
+        } else {
+          stopAnimate('sphere')
+          setTimeout(() => {
+            this.isLuckyDraw = true
+            this.infiniteCycle()
+            this.GetUsers()
+          }, animateDuration)
+        }
       }
     },
     // 停止抽奖
-    stopLuckyDraw () {
+    stopLuckyDraw() {
       if (this.tempNumber === this.number) {
         if (this.luckyDrawTime) {
           clearInterval(this.luckyDrawTime)
@@ -172,7 +178,7 @@ new Vue({
       }
     },
     // 循环名单
-    infiniteCycle () {
+    infiniteCycle() {
       if (this.luckyDrawTime) {
         clearInterval(this.luckyDrawTime)
         this.luckyDrawTime = undefined
@@ -182,19 +188,19 @@ new Vue({
       }, 10);
     },
     // 更新抽奖名单
-    updateNumberUsers () {
+    updateNumberUsers() {
       const tempUsers = []
       var number = 0;
       const total = users.length
       while (number < this.numberPeople) {
-        const index = parseInt(Math.random()*total)
+        const index = parseInt(Math.random() * total)
         const user = users[index]
         if (user) { tempUsers.push(user) }
         number++;
       }
       this.users = tempUsers
     },
-    GetUsers () {
+    GetUsers() {
       // 剩余用户
       const surplusUsers = [...this.surplusUsers]
       const lastUsers = []
@@ -218,12 +224,12 @@ new Vue({
                 if (index !== -1) { this.surplusUsers.splice(index, 1) }
               }
             }
-          } else {}
+          } else { }
         }
       })
       // 随机用户
       while (this.surplusUsers.length > 0 && lastUsers.length < this.numberPeople) {
-        const index = parseInt(Math.random()*this.surplusUsers.length)
+        const index = parseInt(Math.random() * this.surplusUsers.length)
         const user = this.surplusUsers[index]
         if (user) {
           const index = this.surplusUsers.indexOf(user)
@@ -237,17 +243,17 @@ new Vue({
       var length = lastUsers.length
       if (length > 1) {
         for (var i = 0; i < length - 1; i++) {
-            var index = parseInt(Math.random() * (length - i));
-            var temp = lastUsers[index];
-            lastUsers[index] = lastUsers[length - i - 1];
-            lastUsers[length - i - 1] = temp;
+          var index = parseInt(Math.random() * (length - i));
+          var temp = lastUsers[index];
+          lastUsers[index] = lastUsers[length - i - 1];
+          lastUsers[length - i - 1] = temp;
         }
       }
       // 记录数据
       this.lastUsers = lastUsers
     },
     // 保存中奖名单
-    saveWinningUsers () {
+    saveWinningUsers() {
       // 处理名称
       var usernames = []
       var userids = []
@@ -272,7 +278,7 @@ new Vue({
       localStorage.setItem('winning-users', JSON.stringify(this.winningUsers))
     },
     // 下载中奖名单
-    downloadWinningUsers () {
+    downloadWinningUsers() {
       // 列名称
       const columns = [
         {
