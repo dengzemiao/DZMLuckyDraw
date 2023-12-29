@@ -12,8 +12,8 @@ if (!users.length) {
 }
 
 // 使用展示的用户列表，不足 maxCount 会自动补全，如果很多可以加大
-// 根据自身电脑性能增加，使用 mac m2 设置 1000 用户有点卡
-var maxCount = 500
+// 根据自身电脑性能增加，使用 mac m2 设置 700+ 用户有点卡
+var maxCount = 300
 var perspective = maxCount * 11.5
 var userPros = []
 var index = 0
