@@ -179,9 +179,9 @@ function render() {
 // 开始动画
 function onlyAnimate() {
 	setAnimate('grid')
-	// setTimeout(() => {
-	// 	setAnimate('sphere')
-	// }, 4000)
+	setTimeout(() => {
+		setAnimate('sphere')
+	}, 4000)
 }
 
 // 停止动画
