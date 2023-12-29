@@ -185,7 +185,7 @@ new Vue({
       }
       this.luckyDrawTime = setInterval(() => {
         this.updateNumberUsers()
-      }, 10);
+      }, 10)
     },
     // 更新抽奖名单
     updateNumberUsers() {
