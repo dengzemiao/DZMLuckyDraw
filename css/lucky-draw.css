@@ -100,29 +100,33 @@ body {
   height: 240px;
 }
 .lucky-draw-user {
-  width: 100px;
+  width: 140px;
   height: 180px;
   margin-right: 15px;
   background-color: rgba(0, 255, 255, 0.4);
   box-shadow: 0px 0px 12px rgba(0,255,255,0.75);
   border: 1px solid rgba(127,255,255,0.75);
+	position: relative;
   display: flex;
+	align-items: center;
+	justify-content: center;
   flex-direction: column;
-  align-items: center;
 }
 .lucky-draw-user:last-child {
   margin-right: 0px;
 }
 .lucky-draw-user-name {
-  margin-top: 50px;
-  font-size: 26px;
-  font-weight: 700;
+  width: 100%;
+  font-size: 30px;
+  font-weight: bold;
   text-align: center;
+  word-wrap: break-word;
   color: rgba(255,255,255,0.75);
   text-shadow: 0 0 10px rgba(0,255,255,0.95);
 }
 .lucky-draw-user-department {
-  margin-top: 15px;
+	position: absolute;
+	bottom: 14px;
   color: rgba(255,255,255,0.75);
   text-shadow: 0 0 10px rgba(0,255,255,0.95);
 }
