@@ -11,8 +11,9 @@ if (!users.length) {
 	}]
 }
 
-// 使用展示的用户列表，不足 maxCount 会自动补全，如果很多可以加大
-// 根据自身电脑性能增加，使用 mac m2 设置 700+ 用户有点卡
+// 用户展示效果的用户列表，不足 maxCount 会自动二次抽取补全
+// 这里设置的 maxCount，只是单纯为了动画效果，抽奖还是会按实际名单抽取，不会使用展示效果名单抽取
+// 根据自身电脑性能增加效果，使用 mac m2 设置 700+ 有点卡
 var maxCount = 300
 var perspective = maxCount * 11.5
 var userPros = []
