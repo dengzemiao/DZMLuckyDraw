@@ -64,7 +64,8 @@ function init() {
 		// 名片
 		var element = document.createElement('div')
 		element.className = 'element'
-		element.style.backgroundColor = 'rgba(0,127,127,' + (Math.random() * 0.5 + 0.25) + ')'
+		// 名片背景颜色（为了效果，给了个随机透明度）
+		element.style.backgroundColor = `rgba(0, 127, 127, ${Math.random() * 0.5 + 0.25})`
 
 		// var number = document.createElement( 'div' )
 		// number.className = 'number'

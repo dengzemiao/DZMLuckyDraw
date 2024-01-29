@@ -8,11 +8,17 @@ body {
 	font-family: Helvetica, sans-serif;;
 	overflow: hidden;
 }
+/* 单张名片 - 卡片 */
 .element {
 	width: 170px;
 	height: 210px;
-	box-shadow: 0px 0px 12px rgba(0,255,255,0.5);
-	border: 1px solid rgba(127,255,255,0.25);
+	/* 名片阴影 */
+	box-shadow: 0px 0px 12px rgba(0, 255, 255, 0.5);
+	/* 名片边框 */
+	border: 1px solid rgba(127, 255, 255, 0.25);
+	/* 名片背景（内部有根据位置计算，每张名片背景颜色有微调） */
+	/* /js/lucky-draw-animation.js 文件中找到 '名片背景颜色' 位置，有  */
+	/* background-color: red !important; */
 	text-align: center;
 	cursor: default;
 	position: relative;
@@ -21,31 +27,37 @@ body {
 	justify-content: center;
   flex-direction: column;
 }
+/* 单张名片 - hover，可以不管，这个被禁用了 */
 .element:hover {
-	box-shadow: 0px 0px 12px rgba(0,255,255,0.75);
-	border: 1px solid rgba(127,255,255,0.75);
+	box-shadow: 0px 0px 12px rgba(0, 255, 255, 0.75);
+	border: 1px solid rgba(127, 255, 255, 0.75);
 }
+/* 单张名片 - 用户名 */
 .element .symbol {
 	width: 100%;
 	font-size: 38px;
 	font-weight: bold;
 	text-align: center;
 	word-wrap: break-word;
-	color: rgba(255,255,255,0.75);
-	text-shadow: 0 0 10px rgba(0,255,255,0.95);
+	/* 用户名颜色 */
+	color: rgba(255, 255, 255, 0.75);
+	/* 用户名阴影 */
+	text-shadow: 0 0 10px rgba(0, 255, 255, 0.95);
 }
-/* .element .number {
-	position: absolute;
-	top: 20px;
-	right: 20px;
-	font-size: 12px;
-	color: rgba(127,255,255,0.75);
-} */
+/* 单张名片 - 职位 */
 .element .details {
 	position: absolute;
 	bottom: 14px;
 	left: 0px;
 	right: 0px;
 	font-size: 20px;
-	color: rgba(127,255,255,0.75);
+	/* 职位颜色 */
+	color: rgba(127, 255, 255, 0.75);
 }
+/* .element .number {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	font-size: 12px;
+	color: rgba(127, 255, 255, 0.75);
+} */

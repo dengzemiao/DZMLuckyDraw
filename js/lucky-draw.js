@@ -9,7 +9,7 @@ new Vue({
             <div class="lucky-draw-user-name">{{ item.name }}</div>
             <div class="lucky-draw-user-department">{{ item.department }}</div>
           </div>
-          <div v-if="!users.length && !surplusUsers.length" class="ucky-draw-empty">老板大气，已经人人中奖了！</div>
+          <div v-if="!users.length && !surplusUsers.length" class="lucky-draw-empty">老板大气，已经人人中奖了！</div>
         </div>
       </div>
       <!-- 设置奖项，人数，并开始抽奖 -->

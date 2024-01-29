@@ -33,23 +33,33 @@ body {
 .lucky-draw-number, .lucky-draw-number-custom {
   width: 150px;
 }
+/* 抽奖浮层 - 开始抽奖按钮 */
 .ant-input, .ant-btn, .ant-select-selection, .ant-select-arrow {
   background-color: #000;
   border-radius: 0px;
-  border-color: rgba(127,255,255,0.75);
-  color: rgba(255,255,255,0.75);
-  text-shadow: 0 0 10px rgba(0,255,255,0.95);
+  /* 按钮边框 */
+  border-color: rgba(127, 255, 255, 0.75);
+  /* 按钮字体 */
+  color: rgba(255, 255, 255, 0.75);
+  /* 按钮字体阴影 */
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.95);
 }
+/* 抽奖浮层 - 奖项 */
 .ant-select-dropdown {
-  background-color: rgba(0,127,127, 0.5);
+  /* 奖项背景 */
+  background-color: rgba(0, 127, 127, 0.5);
 }
 .ant-select-dropdown-menu-item {
+  /* 奖项字体 */
   color: rgba(255,255,255,0.75) !important;
-  text-shadow: 0 0 10px rgba(0,255,255,0.95);
+  /* 奖项字体阴影 */
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.95);
 }
 .ant-select-dropdown-menu-item:hover, .ant-select-dropdown-menu-item-active, .ant-select-dropdown-menu-item-selected {
-  background-color: rgba(0,127,127, 0.7) !important;
+  /* 奖项选中背景 */
+  background-color: rgba(0, 127, 127, 0.7) !important;
 }
+/* 抽奖浮层 - 抽奖按钮边框圆角，以下几个都是 */
 .ant-select-selection {
   border-right: 0px;
   border-top-left-radius: 5px;
@@ -78,17 +88,24 @@ body {
   background-color: rgba(0, 255, 255, 0);
   transition: all 1s;
 }
+/* 抽奖浮层 - 遮罩 */
 .lucky-draw-start {
   opacity: 1;
+  /* 遮罩背景 */
   background-color: rgba(0, 255, 255, 0.4);
 }
+/* 抽奖浮层 - 抽奖中间撑开承载用户名片的一栏 */
 .lucky-draw-users {
+  /* 抽奖栏背景 */
   background-color: rgba(0, 255, 255, 0.4);
-  box-shadow: 0px 0px 12px rgba(0,255,255,0.75);
-	border: 1px solid rgba(127,255,255,0.75);
+  /* 抽奖栏阴影 */
+  box-shadow: 0px 0px 12px rgba(0, 255, 255, 0.75);
+  /* 抽奖栏边框 */
+	border: 1px solid rgba(127, 255, 255, 0.75);
   width: 100%;
   opacity: 0.2;
   height: 0px;
+  /* 抽奖栏撑开动画 */
   transition: all 0.5s 0.8s;
   display: flex;
   align-items: center;
@@ -99,13 +116,17 @@ body {
   opacity: 1.0;
   height: 260px;
 }
+/* 抽奖浮层 - 单张名片 */
 .lucky-draw-user {
   width: 140px;
   height: 180px;
   margin-right: 15px;
+  /* 名片背景 */
   background-color: rgba(0, 255, 255, 0.4);
-  box-shadow: 0px 0px 12px rgba(0,255,255,0.75);
-  border: 1px solid rgba(127,255,255,0.75);
+  /* 名片阴影 */
+  box-shadow: 0px 0px 12px rgba(0, 255, 255, 0.75);
+  /* 名片边框 */
+  border: 1px solid rgba(127, 255, 255, 0.75);
 	position: relative;
   display: flex;
 	align-items: center;
@@ -115,26 +136,35 @@ body {
 .lucky-draw-user:last-child {
   margin-right: 0px;
 }
+/* 抽奖浮层 - 单张名片 - 用户名 */
 .lucky-draw-user-name {
   width: 100%;
   font-size: 30px;
   font-weight: bold;
   text-align: center;
   word-wrap: break-word;
-  color: rgba(255,255,255,0.75);
-  text-shadow: 0 0 10px rgba(0,255,255,0.95);
+  /* 用户名颜色 */
+  color: rgba(255, 255, 255, 0.75);
+  /* 用户名阴影 */
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.95);
 }
+/* 抽奖浮层 - 单张名片 - 职位 */
 .lucky-draw-user-department {
 	position: absolute;
 	bottom: 14px;
-  color: rgba(255,255,255,0.75);
-  text-shadow: 0 0 10px rgba(0,255,255,0.95);
+  /* 职位颜色 */
+  color: rgba(255, 255, 255, 0.75);
+  /* 职位阴影 */
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.95);
 }
-.ucky-draw-empty {
+/* 抽奖浮层 - 老板大气，已经人人中奖了！ */
+.lucky-draw-empty {
   font-size: 40px;
   font-weight: 700;
-  color: rgba(255,255,255,0.75);
-  text-shadow: 0 0 10px rgba(0,255,255,0.95);
+  /* 字体颜色 */
+  color: rgba(255, 255, 255, 0.75);
+  /* 字体阴影 */
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.95);
 }
 /* 右边工具栏 */
 .lucky-draw-tool-right {
