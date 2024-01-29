@@ -5,9 +5,11 @@ new Vue({
       <!-- 抽奖显示页面 -->
       <div :class="isLuckyDraw ? 'lucky-draw-content lucky-draw-start' : 'lucky-draw-content'">
         <div :class="isLuckyDraw ? 'lucky-draw-users lucky-draw-users-start' : 'lucky-draw-users'">
-          <div class="lucky-draw-user" v-for="item in users" :key="index">
-            <div class="lucky-draw-user-name">{{ item.name }}</div>
-            <div class="lucky-draw-user-department">{{ item.department }}</div>
+          <div class="lucky-draw-users-content" v-if="users.length">
+            <div class="lucky-draw-user" v-for="item in users" :key="index">
+              <div class="lucky-draw-user-name">{{ item.name }}</div>
+              <div class="lucky-draw-user-department">{{ item.department }}</div>
+            </div>
           </div>
           <div v-if="!users.length && !surplusUsers.length" class="lucky-draw-empty">老板大气，已经人人中奖了！</div>
         </div>

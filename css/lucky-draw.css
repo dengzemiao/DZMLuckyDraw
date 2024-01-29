@@ -109,15 +109,27 @@ body {
   transition: all 0.5s 0.8s;
   display: flex;
   align-items: center;
-  justify-content: center;
-  overflow: hidden;
+  overflow-x: auto;
+  /* 隐藏滚动条 */
+  scrollbar-width: none;
+  scrollbar-color: transparent transparent;
 }
+.lucky-draw-users::-webkit-scrollbar {
+  display: none;
+}
+
 .lucky-draw-users-start {
   opacity: 1.0;
   height: 260px;
 }
+/* 抽奖浮层 - 滚动名片容器 */
+.lucky-draw-users-content {
+  margin: auto;
+  display: flex;
+}
 /* 抽奖浮层 - 单张名片 */
 .lucky-draw-user {
+  flex-shrink: 0;
   width: 140px;
   height: 180px;
   margin-right: 15px;
@@ -133,8 +145,8 @@ body {
 	justify-content: center;
   flex-direction: column;
 }
-.lucky-draw-user:last-child {
-  margin-right: 0px;
+.lucky-draw-user:first-child {
+  margin-left: 15px;
 }
 /* 抽奖浮层 - 单张名片 - 用户名 */
 .lucky-draw-user-name {
@@ -159,6 +171,7 @@ body {
 }
 /* 抽奖浮层 - 老板大气，已经人人中奖了！ */
 .lucky-draw-empty {
+  margin: auto;
   font-size: 40px;
   font-weight: 700;
   /* 字体颜色 */
