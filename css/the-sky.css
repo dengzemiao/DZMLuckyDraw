@@ -1,0 +1,111 @@
+/* 天空 */
+#the-sky {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  overflow: hidden;
+}
+/* 星星 - 容器 */
+.star-container {
+  position: absolute;
+  /* 可以在 js 中随机生成星星大小，造成远近感 */
+  /* transform: scale(0.5); */
+}
+/* 星星 - 横 */
+.star-hor {
+  position: absolute;
+  width: 30px;
+  height: 2px;
+  border-radius: 100%;
+  background: linear-gradient(
+    -45deg,
+    rgba(0, 0, 255, 0),
+    /* 星星颜色 */
+    #5f91ff,
+    rgba(0, 0, 255, 0)
+  );
+  transform: scale(0);
+  animation-name: shining;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  /* 动画时间，拆出来就是为了方便生成随机时间 */
+  animation-duration: 3.0s;
+}
+/* 星星 - 竖 */
+.star-ver {
+  position: absolute;
+  top: -14px;
+  left: 14px;
+  width: 2px;
+  height: 30px;
+  border-radius: 100%;
+  background: linear-gradient(
+    -45deg,
+    rgba(0, 0, 255, 0),
+    /* 星星颜色 */
+    #5f91ff,
+    rgba(0, 0, 255, 0)
+  );
+  transform: scale(0);
+  animation-name: shining;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  /* 动画时间，拆出来就是为了方便生成随机时间 */
+  animation-duration: 3.0s;
+}
+/* 星星发光动画 */
+@keyframes shining {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+/* 流星 - 容器 */
+.meteor-container {
+  position: absolute;
+}
+/* 流星 - 主体 */
+.meteor {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1),
+  0 0 0 8px rgba(255, 255, 255, 0.1),
+  0 0 20px rgba(255, 255, 255, 0.1);
+  /* 重复动画，现在按照每个流星每次不同位置的方式出现，这种重复位置出现的则先注释 */
+  /* animation-name: streaking;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-duration: 3.0s; */
+}
+/* 流星 - 尾巴 */
+.meteor-tail {
+  position: absolute;
+  top: 50%;
+  width: 200px;
+  height: 1px;
+  background: linear-gradient(90deg, #fff, transparent);
+  transform: translateY(-50%);
+}
+/* 流星划过天空动画 */
+/* @keyframes streaking {
+  0% {
+    opacity: 1;
+    transform: rotate(315deg) translateX(0);
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(315deg) translateX(-1500px);
+  }
+} */
