@@ -1,6 +1,6 @@
 // 自定义抽奖弹窗组件
 const CustomLuckyDrawDrawer = {
-  data () {
+  data() {
     return {
       // 显示状态
       visible: false,
@@ -59,14 +59,14 @@ const CustomLuckyDrawDrawer = {
   `,
   methods: {
     // 显示抽屉
-    showDrawer () {
+    showDrawer() {
       // 获取自定义列表
       this.customs = JSON.parse(localStorage.getItem('customs')) || []
       // 显示
       this.visible = true
     },
     // 关闭抽屉
-    onClose () {
+    onClose() {
       // 过滤空名称奖项
       const customs = this.customs.filter(item => {
         return !!item.name
@@ -81,7 +81,7 @@ const CustomLuckyDrawDrawer = {
       this.$emit('close')
     },
     // 新增
-    touchAdd () {
+    touchAdd() {
       const custom = {
         name: undefined,
         tag: undefined
@@ -89,7 +89,7 @@ const CustomLuckyDrawDrawer = {
       this.customs.push(custom)
     },
     // 删除
-    touchDelete (index) {
+    touchDelete(index) {
       this.customs.splice(index, 1)
     }
   }
@@ -139,7 +139,7 @@ new Vue({
       <div class="operation-button import-mode">
         <a-select
           v-model="modeType"
-          @change="handleImportModeChange"
+          @change="onModeTypeChange"
         >
           <a-select-option :value="0">默认抽奖模式</a-select-option>
           <a-select-option :value="1">自定义奖项模式</a-select-option>
@@ -149,6 +149,17 @@ new Vue({
           class="operation-success-icon"
           type="check-circle"
         />
+      </div>
+      <!-- 中奖模式 -->
+      <div class="operation-button import-mode">
+        <a-select
+          v-model="winningType"
+          @change="onWinningTypeChange"
+        >
+          <a-select-option :value="0">不可以重复中奖</a-select-option>
+          <a-select-option :value="1">同轮可以重复中奖</a-select-option>
+          <a-select-option :value="2">同轮不可以重复中奖，不同轮可以重复中奖</a-select-option>
+        </a-select>
       </div>
       <!-- 设置按钮 -->
       <a-button
@@ -174,10 +185,12 @@ new Vue({
       <custom-lucky-draw-drawer ref="custom-lucky-draw-drawer" @close="onCloseCustom"></custom-lucky-draw-drawer>
     </div>
   `,
-  data () {
+  data() {
     return {
       // 0 默认抽奖模式，1 自定义抽奖模式
       modeType: 0,
+      // 0 不可以重复中奖 1、同轮可以重复中奖 2、同轮不可以重复中奖，不同轮可以重复中奖
+      winningType: 0,
       // 上传文件列表
       fileList: [],
       // 上传状态
@@ -190,13 +203,20 @@ new Vue({
       isImportMode: false
     }
   },
-  created () {
+  created() {
     // 获取抽奖模式
     const modeType = localStorage.getItem('modeType')
     if (modeType) {
       this.modeType = Number(modeType)
     } else {
       this.modeType = 0
+    }
+    // 获取中奖模式
+    const winningType = localStorage.getItem('winningType')
+    if (winningType) {
+      this.winningType = Number(winningType)
+    } else {
+      this.winningType = 0
     }
     // 获取抽奖用户
     const users = localStorage.getItem('users')
@@ -206,40 +226,46 @@ new Vue({
   },
   methods: {
     // 跳转
-    touchLuckyDrawPage () {
+    touchLuckyDrawPage() {
       window.location.href = './lucky-draw.html'
     },
     // 抽奖模式切换
-    handleImportModeChange (e) {
+    onModeTypeChange(e) {
       // 存储到 localStorage
       localStorage.setItem('modeType', e)
     },
+    // 中奖类型
+    onWinningTypeChange(e) {
+      // 存储到 localStorage
+      localStorage.setItem('winningType', e)
+    },
     // 自定义抽奖组件
-    touchCustom () {
+    touchCustom() {
       this.$refs["custom-lucky-draw-drawer"].showDrawer()
     },
     // 关闭自定义抽奖窗口
-    onCloseCustom () {
+    onCloseCustom() {
       const customs = localStorage.getItem('customs')
       this.isImportMode = customs ? JSON.parse(customs).length : false
     },
     // 清空数据
-    clearData () {
+    clearData() {
       // 清空数据
       localStorage.clear()
       // 清空状态
       this.isImportUsers = false
       this.isImportMode = false
       this.modeType = 0
+      this.winningType = 0
       // 提示
       this.$message.success('清理成功')
     },
     // 上传之前检查
-    beforeUpload (file, fileList) {
+    beforeUpload(file, fileList) {
       return true
     },
     // 自定义上传名单
-    customRequest (data) {
+    customRequest(data) {
       // 数据记录
       this.users = []
       // 进入加载
@@ -286,7 +312,7 @@ new Vue({
       })
     },
     // 获取单个用户数据，传入单元格字段
-    userJson (item) {
+    userJson(item) {
       // 分割字符串
       const items = item.split('-')
       // 如果有3个字段
@@ -308,7 +334,7 @@ new Vue({
           department: isNumber ? '' : items[1],
           number: isNumber ? items[1] : 0
         }
-      } 
+      }
       // 如果有1个字段
       if (items.length >= 1) {
         return {

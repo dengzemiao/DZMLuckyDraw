@@ -65,6 +65,8 @@ new Vue({
       lastUsers: [],
       // 0 默认抽奖模式，1 自定义抽奖模式
       modeType: 0,
+      // 0 不可以重复中奖 1、同轮可以重复中奖 2、同轮不可以重复中奖，不同轮可以重复中奖
+      winningType: 0,
       // 自定义奖项列表
       customs: [],
       // 当前选中奖项
@@ -78,12 +80,19 @@ new Vue({
     }
   },
   mounted() {
-    // 获取模式
+    // 获取抽奖模式
     const modeType = localStorage.getItem('modeType')
     if (modeType) {
       this.modeType = Number(modeType)
     } else {
       this.modeType = 0
+    }
+    // 获取中奖模式
+    const winningType = localStorage.getItem('winningType')
+    if (winningType) {
+      this.winningType = Number(winningType)
+    } else {
+      this.winningType = 0
     }
     // 获取自定义列表
     this.customs = JSON.parse(localStorage.getItem('customs')) || []
@@ -94,18 +103,21 @@ new Vue({
     // 初始化轮数
     this.tempNumber = this.winningUsers.length
     this.number = this.tempNumber + 1
-    // 清理中奖用户
-    this.winningUsers.forEach(item => {
-      // 解析ids
-      const ids = item.ids.split('、').map(Number)
-      // 移除中奖id
-      ids.forEach(id => {
-        // 定位中奖用户
-        const index = this.surplusUsers.findIndex(user => user.id === id)
-        // 从剩余抽奖用户名单中移除
-        if (index !== -1) { this.surplusUsers.splice(index, 1) }
+    // 不可以重复中奖
+    if (this.winningType === 0) {
+      // 清理中奖用户
+      this.winningUsers.forEach(item => {
+        // 解析ids
+        const ids = item.ids.split('、').map(Number)
+        // 移除中奖id
+        ids.forEach(id => {
+          // 定位中奖用户
+          const index = this.surplusUsers.findIndex(user => user.id === id)
+          // 从剩余抽奖用户名单中移除
+          if (index !== -1) { this.surplusUsers.splice(index, 1) }
+        })
       })
-    })
+    }
   },
   methods: {
     // 切换奖项
@@ -214,16 +226,22 @@ new Vue({
             if (user.number == this.number) {
               if (lastUsers.length < this.numberPeople) {
                 lastUsers.push(user)
-                const index = this.surplusUsers.indexOf(user)
-                if (index !== -1) { this.surplusUsers.splice(index, 1) }
+                // 不可以重复中奖
+                if (this.winningType === 0) {
+                  const index = this.surplusUsers.indexOf(user)
+                  if (index !== -1) { this.surplusUsers.splice(index, 1) }
+                }
               }
             }
           } else if (this.modeType == 1) { // 自定义奖项模式
             if (user.number == this.custom.tag && this.custom.tag != 0) {
               if (lastUsers.length < this.numberPeople) {
                 lastUsers.push(user)
-                const index = this.surplusUsers.indexOf(user)
-                if (index !== -1) { this.surplusUsers.splice(index, 1) }
+                // 不可以重复中奖
+                if (this.winningType === 0) {
+                  const index = this.surplusUsers.indexOf(user)
+                  if (index !== -1) { this.surplusUsers.splice(index, 1) }
+                }
               }
             }
           } else { }
@@ -236,8 +254,19 @@ new Vue({
         if (user) {
           const index = this.surplusUsers.indexOf(user)
           if (index !== -1) {
+            // 同轮不可以重复中奖，不同轮可以重复中奖
+            if (this.winningType === 2) {
+              const isExist = lastUsers.some(item => {
+                return item.id === user.id
+              })
+              // 存在则重新随机
+              if (isExist) { continue }
+            }
             lastUsers.push(user)
-            this.surplusUsers.splice(index, 1)
+            // 不可以重复中奖
+            if (this.winningType === 0) {
+              this.surplusUsers.splice(index, 1)
+            }
           }
         }
       }
