@@ -1,5 +1,72 @@
+// 中奖用户列表弹窗
+const WinningUsersModal = {
+  data() {
+    return {
+      // 显示状态
+      visible: false,
+      // 中奖名单列表
+      dataSource: [],
+      // 自定义列表
+      columns: [
+        {
+          title: '轮数',
+          dataIndex: 'round',
+          key: 'round',
+          width: 100
+        },
+        {
+          title: '奖项',
+          dataIndex: 'award',
+          key: 'award',
+          width: 150
+        },
+        {
+          title: '中奖用户',
+          dataIndex: 'names',
+          key: 'names'
+        }
+      ]
+    }
+  },
+  template: `
+    <a-modal
+      width="70%"
+      :visible="visible"
+      :footer="null"
+      :closable="false"
+      @cancel="onClose"
+    >
+      <a-table
+        :columns="columns"
+        :data-source="dataSource"
+        :row-key="record => record.round"
+        :pagination="false"
+      >
+      </a-table>
+    </a-modal>
+  `,
+  methods: {
+    // 显示弹窗
+    showModal(users) {
+      // 更新名单
+      this.dataSource = users
+      // 显示
+      this.visible = true
+    },
+    // 关闭弹窗
+    onClose() {
+      // 关闭窗口
+      this.visible = false
+    }
+  }
+}
+
+// 主视图
 new Vue({
   el: '#app',
+  components: {
+    WinningUsersModal
+  },
   template: `
     <div class="lucky-draw-view">
       <!-- 抽奖显示页面 -->
@@ -46,9 +113,12 @@ new Vue({
         </a-button>
       </div>
       <!-- 右边工具栏 -->
-      <div class="lucky-draw-tool-right" @click="downloadWinningUsers">
-        <a-button shape="circle" icon="download" :disabled="isLuckyDraw" />
+      <div class="lucky-draw-tool-right">
+        <a-button shape="circle" icon="table" :disabled="isLuckyDraw" style="margin-right: 12px;" @click="showWinningUsers" />
+        <a-button shape="circle" icon="download" :disabled="isLuckyDraw" @click="downloadWinningUsers" />
       </div>
+      <!-- 中奖用户列表弹窗 -->
+      <winning-users-modal ref="winning-users-modal"></winning-users-modal>
     </div>
   `,
   data() {
@@ -307,6 +377,10 @@ new Vue({
       })
       // 保存
       localStorage.setItem('winning-users', JSON.stringify(this.winningUsers))
+    },
+    // 显示中奖名单
+    showWinningUsers() {
+      this.$refs["winning-users-modal"].showModal(this.winningUsers)
     },
     // 下载中奖名单
     downloadWinningUsers() {
