@@ -113,6 +113,7 @@ new Vue({
         :customRequest="customRequest" 
       >
         <a-button
+          class="operation-button-wrapper"
           :type="isImportUsers ? 'primary' : 'default'"
           :loading="isLoading"
         >
@@ -127,7 +128,7 @@ new Vue({
       </a-upload>
       <!-- 进入抽奖池 -->
       <a-button
-        class="operation-button"
+        class="operation-button operation-button-wrapper"
         :type="isImportUsers ? 'danger' : 'default'"
         :disabled="isLoading"
         @click="touchLuckyDrawPage"
@@ -135,52 +136,65 @@ new Vue({
         进入抽奖池
         <a-icon type="crown" />
       </a-button>
-      <!-- 切换模式 -->
-      <div class="operation-button import-mode">
+      <!-- 抽奖模式 -->
+      <div class="operation-button">
         <a-select
+          class="operation-button-wrapper"
           v-model="modeType"
           @change="onModeTypeChange"
         >
-          <a-select-option :value="0">默认抽奖模式</a-select-option>
-          <a-select-option :value="1">自定义奖项模式</a-select-option>
+          <a-select-option :value="0">抽奖模式 - 按轮抽奖</a-select-option>
+          <a-select-option :value="1">抽奖模式 - 自定义奖项</a-select-option>
         </a-select>
         <a-icon
-          v-if="modeType == 1 && isImportMode"
+          v-if="isImportMode"
           class="operation-success-icon"
           type="check-circle"
         />
       </div>
       <!-- 中奖模式 -->
-      <div class="operation-button import-mode">
+      <div class="operation-button">
         <a-select
+          class="operation-button-wrapper"
           v-model="winningType"
           @change="onWinningTypeChange"
         >
-          <a-select-option :value="0">不可以重复中奖</a-select-option>
-          <a-select-option :value="1">同轮可以重复中奖</a-select-option>
-          <a-select-option :value="2">同轮不可以重复中奖，不同轮可以重复中奖</a-select-option>
+          <a-select-option :value="0">中奖模式 - 不可以重复中奖</a-select-option>
+          <a-select-option :value="1">中奖模式 - 同轮可以重复中奖</a-select-option>
+          <a-select-option :value="2">中奖模式 - 同轮不可以重复中奖，不同轮可以重复中奖</a-select-option>
         </a-select>
       </div>
-      <!-- 设置按钮 -->
+      <!-- 重置按钮 -->
       <a-button
-        v-if="modeType == 1"
-        class="operation-button import-setting"
-        type="primary"
-        shape="circle"
-        @click="touchCustom"
+        class="operation-button operation-button-wrapper"
+        @click="clearWinningData"
       >
-        <a-icon type="setting" />
+        清空中奖数据，保持配置不变，重新抽奖
+        <a-icon type="reload" />
       </a-button>
       <!-- 重置按钮 -->
       <a-button
-        class="operation-button"
+        class="operation-button operation-button-wrapper"
         @click="clearData"
       >
         清空所有数据
         <a-icon type="reload" />
       </a-button>
+      <!-- 工具栏 -->
+      <div class="operation-tool">
+        <!-- 自定义奖项 -->
+        <a-button
+          v-if="modeType == 1"
+          class="operation-tool-button"
+          shape="circle"
+          :type="isImportMode ? 'primary' : 'default'"
+          @click="touchCustom"
+        >
+         <a-icon type="database" />
+        </a-button>
+      </div>
       <!-- 提示 -->
-      <span class="import-hint">小提示：上传名单只支持 .xlsx、.xls、.csv 文件格式，纯名单即可！已中奖用户不会重复中奖！</span>
+      <span class="import-hint">小提示：上传名单只支持 .xlsx、.xls、.csv 文件格式，纯名单即可！</span>
       <!-- 自定义抽奖组件 -->
       <custom-lucky-draw-drawer ref="custom-lucky-draw-drawer" @close="onCloseCustom"></custom-lucky-draw-drawer>
     </div>
@@ -247,6 +261,13 @@ new Vue({
     onCloseCustom() {
       const customs = localStorage.getItem('customs')
       this.isImportMode = customs ? JSON.parse(customs).length : false
+    },
+    // 清空中奖数据，保持配置不变，重新开始抽奖
+    clearWinningData() {
+      // 清空数据
+      localStorage.setItem('winning-users', '[]')
+      // 提示
+      this.$message.success('清理成功')
     },
     // 清空数据
     clearData() {
