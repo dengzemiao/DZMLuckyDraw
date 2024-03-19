@@ -71,7 +71,7 @@ new Vue({
     <div class="lucky-draw-view">
       <!-- 抽奖显示页面 -->
       <div :class="isLuckyDraw ? 'lucky-draw-content lucky-draw-start' : 'lucky-draw-content'">
-        <div :class="isLuckyDraw ? 'lucky-draw-users lucky-draw-users-start' : 'lucky-draw-users'">
+        <div :class="isLuckyDraw ? (isScrollbarVisible ? 'lucky-draw-users show-scrollbar lucky-draw-users-start' : 'lucky-draw-users hide-scrollbar lucky-draw-users-start') : (isScrollbarVisible ? 'lucky-draw-users show-scrollbar' : 'lucky-draw-users hide-scrollbar')">
           <div class="lucky-draw-users-content" v-if="users.length">
             <div class="lucky-draw-user" v-for="item in users" :key="index">
               <div class="lucky-draw-user-name">{{ item.name }}</div>
@@ -146,7 +146,9 @@ new Vue({
       // 剩余未中奖人数
       surplusUsers: [],
       // 滚动定时器
-      luckyDrawTime: undefined
+      luckyDrawTime: undefined,
+      // 鼠标滚动元素
+      mouseScrollingElement: null
     }
   },
   mounted() {
@@ -235,12 +237,18 @@ new Vue({
           this.isLuckyDraw = true
           this.infiniteCycle()
           this.GetUsers()
+          this.$nextTick(() => {
+            this.addMonitorMouseScrolling()
+          })
         } else {
           stopAnimate('sphere')
           setTimeout(() => {
             this.isLuckyDraw = true
             this.infiniteCycle()
             this.GetUsers()
+            this.$nextTick(() => {
+              this.addMonitorMouseScrolling()
+            })
           }, animateDuration)
         }
       }
@@ -254,11 +262,41 @@ new Vue({
           this.users = this.lastUsers
           this.saveWinningUsers()
         } else {
+          this.removeMonitorMouseScrolling()
           this.isLuckyDraw = false
           this.numberPeople = undefined
           this.number += 1
           stopAnimate('grid')
         }
+      }
+    },
+    // 添加鼠标滚轮事件
+    addMonitorMouseScrolling(element) {
+      this.mouseScrollingElement = element || document.getElementsByClassName('lucky-draw-users')[0]
+      this.removeMonitorMouseScrolling(this.mouseScrollingElement)
+      this.mouseScrollingElement.addEventListener('wheel', this.monitorMouseScrollingHandler, { passive: false })
+    },
+    // 移除鼠标滚轮事件
+    removeMonitorMouseScrolling(element) {
+      this.mouseScrollingElement = element || document.getElementsByClassName('lucky-draw-users')[0]
+      this.mouseScrollingElement.removeEventListener('wheel', this.monitorMouseScrollingHandler)
+    },
+    // 鼠标滚动事件处理
+    monitorMouseScrollingHandler(event) {
+      // 当鼠标滚动时，根据滚动的方向（deltaY）来决定是否执行横向滚动
+      if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
+        // 上下滚动进行处理
+        if (event.deltaY > 0) {
+          // 向下滚动时的处理
+          this.mouseScrollingElement.scrollBy(event.deltaY, 0)
+        } else {
+          // 向上滚动时的处理
+          this.mouseScrollingElement.scrollBy(event.deltaY, 0)
+        }
+        // 阻止垂直方向的默认滚动
+        event.preventDefault()
+      } else {
+        // 左右滚动不做处理
       }
     },
     // 循环名单

@@ -110,17 +110,37 @@ body {
   display: flex;
   align-items: center;
   overflow-x: auto;
-  /* 隐藏滚动条 */
-  scrollbar-width: none;
-  scrollbar-color: transparent transparent;
 }
-.lucky-draw-users::-webkit-scrollbar {
-  display: none;
-}
-
+/* 抽奖浮层 - 开始抽奖从中间撑开 */
 .lucky-draw-users-start {
   opacity: 1.0;
   height: 260px;
+}
+/* 隐藏滚动条 */
+.hide-scrollbar {
+  scrollbar-width: none;
+  scrollbar-color: transparent transparent;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+/* 展示滚动条 */
+/* 定义滚动条的背景色 */
+.show-scrollbar::-webkit-scrollbar {
+  background: transparent;
+}
+/* 定义滚动条轨道的颜色 */
+.show-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+/* 定义滚动条滑块的颜色 */
+.show-scrollbar::-webkit-scrollbar-thumb {
+  background: #fff;
+  border-radius: 6px;
+}
+/* 定义滚动条滑块在鼠标悬停时的颜色 */
+.show-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 255, 255, 0.75);
 }
 /* 抽奖浮层 - 滚动名片容器 */
 .lucky-draw-users-content {
