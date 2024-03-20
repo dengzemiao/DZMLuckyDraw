@@ -194,7 +194,7 @@ new Vue({
         </a-button>
       </div>
       <!-- 提示 -->
-      <span class="import-hint">小提示：上传名单只支持 .xlsx、.xls、.csv 文件格式，纯名单即可！</span>
+      <span class="import-hint">小提示：上传名单只支持 .xlsx、.xls、.csv 文件格式，纯名单即可！推荐 Chrome 浏览器，兼容效果最佳！</span>
       <!-- 自定义抽奖组件 -->
       <custom-lucky-draw-drawer ref="custom-lucky-draw-drawer" @close="onCloseCustom"></custom-lucky-draw-drawer>
     </div>
