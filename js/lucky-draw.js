@@ -114,8 +114,22 @@ new Vue({
       </div>
       <!-- 右边工具栏 -->
       <div class="lucky-draw-tool-right">
-        <a-button shape="circle" icon="table" :disabled="isLuckyDraw" style="margin-right: 12px;" @click="showWinningUsers" />
-        <a-button shape="circle" icon="download" :disabled="isLuckyDraw" @click="downloadWinningUsers" />
+        <!-- 中奖名单 -->
+        <a-button
+          class="lucky-draw-tool-button"
+          shape="circle"
+          icon="table"
+          :disabled="isLuckyDraw"
+          @click="showWinningUsers"
+        />
+        <!-- 下载中奖名单 -->
+        <a-button
+          class="lucky-draw-tool-button"
+          shape="circle"
+          icon="download"
+          :disabled="isLuckyDraw"
+          @click="downloadWinningUsers"
+        />
       </div>
       <!-- 中奖用户列表弹窗 -->
       <winning-users-modal ref="winning-users-modal"></winning-users-modal>

@@ -40,9 +40,18 @@
   position: absolute;
   margin-top: 20px;
   right: 20px;
+  display: flex;
+}
+.operation-tool-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.operation-tool-button .anticon {
+  display: flex;
 }
 .operation-tool-button:not(:last-child) {
-  margin-right: 10px;
+  margin-right: 12px;
 }
 .import-hint {
   margin-top: 30px;

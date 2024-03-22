@@ -210,6 +210,15 @@ body {
   right: 15px;
   bottom: 15px;
 }
-.lucky-draw-tool-right .ant-btn {
+.lucky-draw-tool-button {
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lucky-draw-tool-button .anticon {
+  display: flex;
+}
+.lucky-draw-tool-button:not(:last-child) {
+  margin-right: 12px;
 }
