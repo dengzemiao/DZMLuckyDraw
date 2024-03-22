@@ -339,6 +339,10 @@ new Vue({
     GetUsers() {
       // 剩余用户
       const surplusUsers = [...this.surplusUsers]
+      // 剩余的内定用户
+      let tagUsers = []
+      let tagNumbers = []
+      // 本轮中奖名单
       const lastUsers = []
       // 标记用户
       surplusUsers.forEach(user => {
@@ -369,12 +373,52 @@ new Vue({
           } else { }
         }
       })
+      // 剩余内定用户
+      tagUsers = this.surplusUsers.filter(user => !!user.number) || []
+      tagUsers.sort((a, b) => a.number - b.number)
+      tagUsers.forEach(user => {
+        tagNumbers.push(user.number)
+      })
       // 随机用户
       while (this.surplusUsers.length > 0 && lastUsers.length < this.numberPeople) {
-        const index = parseInt(Math.random() * this.surplusUsers.length)
+        const surplusUsersLength = this.surplusUsers.length
+        const tagUsersLength = tagNumbers.length
+        const index = parseInt(Math.random() * surplusUsersLength)
         const user = this.surplusUsers[index]
         if (user) {
           const index = this.surplusUsers.indexOf(user)
+          // 内定用户在剩余名单充足情况不允许进入随机池 && 剩余用户 > 内定用户 && 当前是内定用户
+          if (!isTagUsersAllowRandom && surplusUsersLength > tagUsersLength && !!user.number) {
+            // 重新抽取
+            continue
+          }
+          // 内定用户有值 && 不允许随机抽取内定用户 && 当前是内定用户
+          if (tagNumbers.length && tagUsersRandomWinningOrderType !== 0 && !!user.number) {
+            // 根据内定优先级进行中奖
+            if (tagUsersRandomWinningOrderType === 1) {
+              // 看抽中第几个
+              const index = tagNumbers.indexOf(user.number)
+              // 不是第一个
+              if (index != 0) {
+                // 重新抽取
+                continue
+              } else {
+                // 移除
+                tagNumbers.splice(index, 1)
+              }
+            } else if (tagUsersRandomWinningOrderType === 2) {
+              // 看抽中第几个
+              const index = tagNumbers.indexOf(user.number)
+              // 不是最后一个
+              if (index != (tagUsersLength - 1)) {
+                // 重新抽取
+                continue
+              } else {
+                // 移除
+                tagNumbers.splice(index, 1)
+              }
+            }
+          }
           if (index !== -1) {
             // 同轮不可以重复中奖，不同轮可以重复中奖
             if (this.winningType === 2) {
@@ -402,7 +446,7 @@ new Vue({
           lastUsers[length - i - 1] = temp;
         }
       }
-      // 记录数据
+      // 记录本轮中奖名单
       this.lastUsers = lastUsers
     },
     // 保存中奖名单
